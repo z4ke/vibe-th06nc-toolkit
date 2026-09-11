@@ -96,8 +96,16 @@ def parse_raw_packets(data: bytes, header_size: int):
         pos += 8 + length
     return packets
 
-def convert(in_path, out_path, header_size=40, channels=2, pre_skip=32, sample_rate=48000, serial=0x1234ABCD):
+def convert(in_path, out_path, header_size=40, channels=None, pre_skip=32, sample_rate=48000, serial=0x1234ABCD):
     data = open(in_path, 'rb').read()
+    if channels is None:
+        # byte 9 of the header is the confirmed channel-count field (game
+        # requires it to be 1 or 2) -- read it instead of assuming stereo,
+        # or mono tracks would come out as garbled/wrong-channel audio.
+        channels = data[9]
+        if channels not in (1, 2):
+            raise ValueError(f"header byte 9 = {channels}, expected 1 or 2 -- "
+                              f"wrong header_size, or not this file format?")
     packets = parse_raw_packets(data, header_size)
     if not packets:
         raise ValueError("no valid packets parsed - wrong header_size?")
