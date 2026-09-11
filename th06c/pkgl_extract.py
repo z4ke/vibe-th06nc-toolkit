@@ -6,7 +6,7 @@ Install once:
     pip install zstandard
 
 Usage:
-    python pkgl_extract_win.py CM.DAT th06CM ./output_dir
+    python pkgl_extract.py CM.DAT th06CM ./output_dir
     (second arg = the archive's own on-disk filename, minus path and extension)
 """
 import sys, os, zlib, struct
@@ -70,7 +70,7 @@ def extract_pkgl(path: str, archive_key_name: str, outdir: str):
 
 if __name__ == '__main__':
     if len(sys.argv) != 4:
-        print('usage: pkgl_extract_win.py <archive.dat> <key_name_no_ext> <outdir>')
+        print('usage: pkgl_extract.py <archive.dat> <key_name_no_ext> <outdir>')
         print("  key_name_no_ext = the archive's own on-disk filename, minus path and extension")
         print('  e.g. for th06CM.dat, key_name_no_ext = th06CM')
         sys.exit(1)
