@@ -3,7 +3,7 @@ PKGL archive packer — Windows/cross-platform version (uses `zstandard` pip
 package instead of ctypes+libzstd). For modding Touhou 6 New Classic / the
 2026 patch's PKGL archives.
 
-NOTE on the per-entry checksum/key field: see pkgl_extract_win.py's docstring
+NOTE on the per-entry checksum/key field: see pkgl_extract.py's docstring
 and the accompanying writeup — nothing observed in the game's load path
 re-validates this field against the file data, it's only used as the
 decrypt key, so this packer is free to assign it deterministically
@@ -13,14 +13,14 @@ Install once:
     pip install zstandard
 
 Usage:
-    python pkgl_pack_win.py <input_dir> <output.dat> <archive_key_name>
+    python pkgl_repack.py <input_dir> <output.dat> <archive_key_name>
     (archive_key_name = the archive's own on-disk filename, minus path/extension,
      e.g. "th06CM" for th06CM.dat)
 
 Workflow for modding:
-    1. python pkgl_extract_win.py th06CM.dat th06CM ./th06CM_extracted
+    1. python pkgl_extract.py th06CM.dat th06CM ./th06CM_extracted
     2. edit/replace files inside ./th06CM_extracted
-    3. python pkgl_pack_win.py ./th06CM_extracted th06CM.dat th06CM
+    3. python pkgl_repack.py ./th06CM_extracted th06CM.dat th06CM
        (back up the original first!)
 """
 import sys, os, zlib, struct
@@ -113,7 +113,7 @@ def pack_pkgl(input_dir: str, output_path: str, archive_key_name: str,
 
 if __name__ == '__main__':
     if len(sys.argv) != 4:
-        print('usage: pkgl_pack_win.py <input_dir> <output.dat> <archive_key_name>')
+        print('usage: pkgl_repack.py <input_dir> <output.dat> <archive_key_name>')
         sys.exit(1)
     n = pack_pkgl(sys.argv[1], sys.argv[2], sys.argv[3])
     print(f'packed {n} files into {sys.argv[2]}')
