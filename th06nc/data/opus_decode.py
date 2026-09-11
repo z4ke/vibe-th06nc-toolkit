@@ -4,7 +4,7 @@ repeating [4-byte BE length][4 unused bytes][opus packet]) into a standard
 Ogg Opus (.ogg/.opus) file playable by any normal player.
 
 Usage:
-    python3 raw_opus_to_ogg.py input.opus output.ogg
+    python3 opus_decode.py input.opus output.ogg
 """
 import sys, struct, zlib
 
@@ -81,7 +81,7 @@ def build_opus_head(channels, pre_skip, input_sample_rate, output_gain=0, mappin
             struct.pack('<h', output_gain) +
             bytes([mapping_family]))
 
-def build_opus_tags(vendor=b'raw_opus_to_ogg'):
+def build_opus_tags(vendor=b'github.com/z4ke/vibe-th06nc-toolkit'):
     return b'OpusTags' + struct.pack('<I', len(vendor)) + vendor + struct.pack('<I', 0)
 
 # ---------- Raw-format parser ----------
@@ -126,7 +126,7 @@ def convert(in_path, out_path, header_size=40, channels=None, pre_skip=32, sampl
 
 if __name__ == '__main__':
     if len(sys.argv) != 3:
-        print('usage: raw_opus_to_ogg.py input.opus output.ogg')
+        print('usage: opus_decode.py input.opus output.ogg')
         sys.exit(1)
     n, granule = convert(sys.argv[1], sys.argv[2])
     print(f'wrote {n} packets, {granule} samples ({granule/48000:.2f}s)')
