@@ -18,7 +18,11 @@ function, sub_14007EA60):
                never appears to apply any pre-skip trim to the output)
   bytes 20-31: unreferenced by the parser -- unknown, copied from template
   bytes 32-35: second magic constant, MUST be exactly 0x80000004 (checked, rejects otherwise)
-  bytes 36-39: total sample count (confirmed exact match to the runtime struct's +0x58 field)
+  bytes 36-39: total size (in bytes) of the packet-stream data section that follows
+               the header (i.e. output_file_size - 40), NOT sample count.
+               Confirmed via exact arithmetic: header_field / packet_size gave an
+               exact integer packet count matching the real track length almost
+               perfectly (off by 32 samples, i.e. the last packet's trim).
 
 So bytes 4-8 and 20-31 are the only genuinely-unknown parts left, and this
 tool still copies those from a template file for safety. Every other byte
@@ -105,6 +109,7 @@ def build_raw_opus(ogg_path: str, out_path: str, header_template: bytes):
               f'ran at 48kHz, or the audio will sound wrong)')
 
     total_samples = sum(opus_packet_samples(p) for p in packets)
+    total_data_bytes = sum(8 + len(p) for p in packets)  # this is what actually goes in the header
 
     header = bytearray(header_template)
     assert len(header) == 40, 'header template must be exactly 40 bytes'
@@ -113,7 +118,7 @@ def build_raw_opus(ogg_path: str, out_path: str, header_template: bytes):
     struct.pack_into('<I', header, 12, 48000)         # confirmed fixed field
     struct.pack_into('<I', header, 16, 32)            # confirmed: header_size(40) - 8
     struct.pack_into('<I', header, 32, 0x80000004)    # confirmed fixed magic
-    struct.pack_into('<I', header, 36, total_samples) # confirmed field
+    struct.pack_into('<I', header, 36, total_data_bytes) # confirmed field (total data-section bytes, not samples)
 
     out = bytearray(header)
     for p in packets:
@@ -124,7 +129,8 @@ def build_raw_opus(ogg_path: str, out_path: str, header_template: bytes):
     with open(out_path, 'wb') as f:
         f.write(out)
     return dict(channels=channels, sample_rate=sample_rate,
-                n_packets=len(packets), total_samples=total_samples)
+                n_packets=len(packets), total_samples=total_samples,
+                total_data_bytes=total_data_bytes)
 
 if __name__ == '__main__':
     ap = argparse.ArgumentParser()
@@ -144,3 +150,4 @@ if __name__ == '__main__':
 
     info = build_raw_opus(args.input_ogg, args.output_opus, template_header)
     print(info)
+  
