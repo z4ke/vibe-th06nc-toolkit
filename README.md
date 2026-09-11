@@ -1,7 +1,7 @@
 # Fully hallucinated Touhou Koumakyou: New Classic - the Embodiment of Scarlet Devil modding toolkit
 Sloppy Python scripts for both extracting and repacking PKGL (Zstandard) archives used in 2026 remake of Touhou 6 (and the 1.03 update to the original game that comes with it), complete with non-standard opus "decoder" and "encoder" (for New Classic) and batch scripts for one-click operation.
 
-These are slow with bigger New Classic archives and are a temporary, albeit fully functional solution until thtk or some other tool implements proper PKGL support.
+These are slow with bigger New Classic archives and are a temporary, albeit fully functional solution until thtk or some other project implements proper PKGL support.
 ## Usage
 1. Install Python https://www.python.org/downloads/
 2. Run `pip install zstandard` in command line
