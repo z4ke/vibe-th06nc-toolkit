@@ -25,8 +25,8 @@ tool still copies those from a template file for safety. Every other byte
 is now set correctly and precisely rather than guessed.
 
 Usage:
-    python3 ogg_to_raw_opus.py input.ogg output.opus --template original_extracted_track.opus
-    python3 ogg_to_raw_opus.py input.ogg output.opus --default
+    python3 opus_encode.py input.ogg output.opus --template original_extracted_track.opus
+    python3 opus_encode.py input.ogg output.opus --default
 """
 import sys, struct, argparse
 
