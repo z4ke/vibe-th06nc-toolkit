@@ -2,7 +2,7 @@
 Sloppy Python scripts for both extracting and repacking PKGL (Zstandard) archives used in 2026 remake of Touhou 6 (and the 1.03 update to the original game that comes with it), complete with non-standard opus "decoder" and "recoder" (for New Classic) and batch scripts for one-click operation.
 
 These are slow with bigger New Classic archives and are a temporary, albeit fully functional solution until thtk or some other tool implements proper PKGL support.
-# Usage
+## Usage
 * Install Python https://www.python.org/downloads/
 * Run `pip install zstandard` in command line
 * Download/clone the repository
